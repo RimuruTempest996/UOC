@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UOC | Generador DNCP</title>
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+<header class="top"><div><strong>UOC</strong><span>Generador DNCP CSV</span></div></header>
+<main class="wrap">
+<section class="hero"><h1>Generador DNCP</h1><p>Analiza cualquier Excel, identifica los datos por significado y genera la salida CSV usando la plantilla DNCP sin modificar su estructura.</p></section>
+<section class="card">
+<h2>1. Cargar Excel</h2>
+<label class="drop" id="drop"><input id="file" type="file" accept=".xlsx,.xls,.csv"><b>Seleccionar archivo</b><small>Puede contener varias hojas, encabezados desplazados y diseños diferentes.</small></label>
+<div id="message" class="message"></div>
+</section>
+<section class="card hidden" id="analysis">
+<h2>2. Análisis</h2><div id="summary"></div><div id="sheets"></div>
+<h3>Mapeo detectado</h3><div id="mapping"></div>
+</section>
+<section class="card hidden" id="preview">
+<h2>3. Datos normalizados</h2><div class="tablewrap"><table id="table"></table></div>
+<div class="actions"><button id="download" disabled>GENERAR CSV DNCP</button></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="src/app.js"></script>
+</body></html>
