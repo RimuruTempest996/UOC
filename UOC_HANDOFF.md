@@ -1,23 +1,15 @@
 # UOC — CONTEXTO DE CONTINUIDAD
 
-Este archivo existe para continuar el proyecto desde otra instancia o cuenta de ChatGPT sin depender del historial de esta conversación.
+Este archivo permite continuar UOC desde otra instancia o cuenta de ChatGPT sin depender del historial de esta conversación.
 
 ## Objetivo
-
-UOC transforma archivos Excel de origen, aunque tengan diseños, hojas, posiciones, encabezados, celdas combinadas o columnas diferentes, en un CSV con la estructura exacta del modelo de carga DNCP.
-
-La regla principal es: **entrada variable, salida fija**. No se debe modificar la estructura DNCP.
+UOC transforma Excel de origen con diseños variables en un CSV con la estructura exacta del modelo DNCP. Regla central: **entrada variable, salida fija**. No modificar la estructura DNCP.
 
 ## Repositorio
-
 GitHub: https://github.com/RimuruTempest996/UOC
-Rama principal: `main`
+Rama: `main`
 
-## Estado actual
-
-Existe una interfaz web inicial en `index.html`.
-
-Archivos actuales:
+## Archivos principales
 - `index.html`
 - `src/app.js`
 - `src/styles.css`
@@ -26,33 +18,21 @@ Archivos actuales:
 - `README.md`
 - `UOC_HANDOFF.md`
 
-## Archivos de referencia usados durante el desarrollo
+## Referencias analizadas
+Excel de origen: `Caudro_de_Adj_N°_Mantenimiento_de_Edificios_de_las_Facultades_UNI.xlsx`
+CSV DNCP: `462740_Mantenimiento_de_Edificios_en_el_Campus_y_en_las_Filiales(1).csv`
 
-Excel de origen analizado:
-`Caudro_de_Adj_N°_Mantenimiento_de_Edificios_de_las_Facultades_UNI.xlsx`
+El CSV DNCP de referencia tiene 49 filas, 15 columnas, separador `;` y codificación Windows-1252. La fila 6 es el encabezado; las filas 1-4 son metadatos y la fila 5 está vacía.
 
-CSV DNCP de referencia analizado:
-`462740_Mantenimiento_de_Edificios_en_el_Campus_y_en_las_Filiales(1).csv`
+## Contrato de salida DNCP
+Filas iniciales:
+1. `LICITACIÓN: {LICITACION}`
+2. `SISTEMA DE ADJUDICACIÓN: {SISTEMA_ADJUDICACION}`
+3. `PROVEEDOR: {PROVEEDOR}`
+4. `OBSERVACIÓN: En caso de que una fila no sera cargada eliminar la fila y los atributos de la lista. `
+5. vacía
 
-El CSV de referencia tiene 49 filas y 15 columnas separadas por `;`, con codificación Windows-1252. La fila 6 contiene los encabezados exactos y las filas 1 a 4 contienen metadatos.
-
-## Contrato exacto de salida DNCP
-
-Fila 1:
-`LICITACIÓN: {LICITACION}`
-
-Fila 2:
-`SISTEMA DE ADJUDICACIÓN: {SISTEMA_ADJUDICACION}`
-
-Fila 3:
-`PROVEEDOR: {PROVEEDOR}`
-
-Fila 4:
-`OBSERVACIÓN: En caso de que una fila no sera cargada eliminar la fila y los atributos de la lista. `
-
-Fila 5: vacía.
-
-Fila 6, columnas exactas:
+Encabezados exactos:
 1. `"Número Lote"`
 2. `Número Grupo`
 3. `Número Item`
@@ -69,51 +49,23 @@ Fila 6, columnas exactas:
 14. `Atributo`
 15. `Descripción Atributo`
 
-Los datos comienzan después de la fila de encabezados. Los atributos pueden aparecer en filas adicionales que mantienen vacías las primeras 13 columnas y usan las columnas 14 y 15, por ejemplo `procedencia;Paraguay`.
+Los atributos se representan en filas independientes con las primeras 13 columnas vacías y las columnas 14-15 con atributo y valor, por ejemplo `procedencia;Paraguay`.
 
 ## Excel de referencia
-
-El Excel de origen tiene 4 hojas:
+Hojas y dimensiones:
 - `Lote I`: 141 x 8
 - `Lotes II y III`: 446 x 11
 - `Lote III`: 414 x 11
 - `Ítems (3)`: 569 x 8
 
-No asumir posiciones fijas. Hay diferentes diseños, filas vacías, fórmulas y datos de lotes.
+El diseño no debe tratarse como fijo. Hay hojas con posiciones diferentes, filas vacías, fórmulas y estructuras distintas.
 
-Campos semánticos importantes detectados:
-- institución
-- licitación
-- adjudicado/proveedor
-- lote
-- ítem
-- código de catálogo/producto
-- descripción
-- cantidad
-- atributos
-- características
-- precio unitario
-- precio total
+## Estado técnico actual
+`src/app.js` ya fue actualizado para generar las 15 columnas DNCP, con separador `;`, metadatos iniciales y filas de atributos. Commit actual de la actualización del generador: `55cc8890ce0c48899de90f8f7c111d5b35ba4d7a`.
 
-## Reglas de implementación
+`templates/dncp_template.csv` contiene el contrato estructural de salida.
 
-1. Analizar todas las hojas.
-2. Detectar encabezados por similitud semántica.
-3. No depender de números de fila o columna fijos.
-4. Normalizar a un modelo interno.
-5. Detectar metadatos aunque estén fuera de la tabla.
-6. Conservar atributos como filas independientes cuando corresponda.
-7. Generar siempre exactamente 15 columnas y el separador `;`.
-8. Mantener la estructura textual de la plantilla DNCP.
-9. Escapar correctamente `;`, comillas y saltos de línea cuando corresponda al CSV.
-10. Validar antes de permitir la descarga.
-11. La plantilla `templates/dncp_template.csv` es el contrato de salida y no debe cambiarse sin verificar nuevamente el modelo DNCP.
-
-## Próximo trabajo obligatorio
-
-Actualizar `src/app.js` para que deje de generar la salida provisional de 8 columnas y genere el formato de 15 columnas definido arriba.
-
-El mapeo mínimo desde el Excel debe producir:
+## Mapeo semántico
 - Número Lote ← lote
 - Número Grupo ← grupo/número de grupo
 - Número Item ← ítem
@@ -121,17 +73,35 @@ El mapeo mínimo desde el Excel debe producir:
 - Grupo Descripción ← descripción del lote/grupo
 - Nombre del Producto ← descripción/nombre del ítem
 - Cantidad ← cantidad
-- Contrato Abierto ← detectar valor existente; no inventar
-- Abastecimiento Simultáneo ← detectar valor existente; no inventar
-- Tipo Contrato Abierto ← detectar valor existente; no inventar
-- Cantidad Adjudicada ← detectar valor existente; no inventar
-- Porcentaje de Distribución ← detectar valor existente; no inventar
+- Contrato Abierto ← valor existente; no inventar
+- Abastecimiento Simultáneo ← valor existente; no inventar
+- Tipo Contrato Abierto ← valor existente; no inventar
+- Cantidad Adjudicada ← valor existente; no inventar
+- Porcentaje de Distribución ← valor existente; no inventar
 - Precio Unitario Adjudicado ← precio unitario
 - Atributo ← atributo
 - Descripción Atributo ← valor del atributo
 
-No inventar valores que no estén disponibles en el Excel.
+## Reglas obligatorias
+1. Analizar todas las hojas.
+2. Detectar encabezados por similitud semántica.
+3. No depender de celdas fijas.
+4. Normalizar antes de exportar.
+5. Detectar metadatos fuera de las tablas.
+6. Conservar atributos como filas independientes.
+7. Salida siempre de 15 columnas y separador `;`.
+8. Mantener textos y orden del contrato DNCP.
+9. No inventar datos ausentes.
+10. Validar estructura antes de descargar.
+11. `templates/dncp_template.csv` es el contrato maestro y no debe alterarse sin volver a verificar el modelo oficial.
 
-## Continuidad
+## Próximas mejoras
+- Validación estricta de las 15 columnas y filas de atributos.
+- Conversión real a Windows-1252 si el navegador no conserva esa codificación.
+- Mejor detección de fórmulas y celdas combinadas.
+- Mejor inferencia de grupo/lote cuando el Excel no tenga encabezados explícitos.
+- Pruebas automáticas con el Excel de referencia.
+- Comparación automática de estructura contra `templates/dncp_template.csv`.
 
-Una nueva instancia debe leer este archivo primero y después revisar el código actual del repositorio. El trabajo debe continuar desde el estado real de GitHub, no reconstruirse desde cero.
+## Instrucción para otra instancia
+Leer este archivo primero. Después revisar `index.html`, `src/app.js`, `templates/dncp_template.csv` y el historial actual de GitHub. Continuar desde el estado real del repositorio; no reconstruir el proyecto desde cero.
