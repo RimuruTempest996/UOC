@@ -1,0 +1,6 @@
+LICITACIÓN: {LICITACION};;;;;;;;;;;;;;
+SISTEMA DE ADJUDICACIÓN: {SISTEMA_ADJUDICACION};;;;;;;;;;;;;;
+PROVEEDOR: {PROVEEDOR};;;;;;;;;;;;;;
+OBSERVACIÓN: En caso de que una fila no sera cargada eliminar la fila y los atributos de la lista. ;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+"Número Lote";Número Grupo;Número Item;Código de Producto;Grupo Descripción;Nombre del Producto;Cantidad;Contrato Abierto;Abastecimiento Simultáneo;Tipo Contrato Abierto;Cantidad Adjudicada;Porcentaje de Distribución;Precio Unitario Adjudicado;Atributo;Descripción Atributo
